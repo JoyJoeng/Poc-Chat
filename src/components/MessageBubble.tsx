@@ -66,10 +66,20 @@ export default function MessageBubble({
   );
 }
 
-export function TimestampDivider({ label }: { label: string }) {
+export function TimestampDivider({
+  label,
+  dark = false,
+}: {
+  label: string;
+  dark?: boolean;
+}) {
   return (
     <div className="flex justify-center py-4">
-      <span className="text-xs text-[var(--ig-text-secondary)] font-medium">
+      <span
+        className={`text-xs font-medium ${
+          dark ? "text-[#666]" : "text-[var(--ig-text-secondary)]"
+        }`}
+      >
         {label}
       </span>
     </div>

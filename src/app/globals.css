@@ -13,6 +13,10 @@
   --ig-send-purple-hover: #7d2fe8;
   --ig-bubble-received: #efefef;
   --ig-input-bg: #efefef;
+  --ig-story-bubble: #262626;
+  --ig-story-bubble-user: #505050;
+  --ig-story-send-bg: #555555;
+  --ig-story-send-hover: #666666;
   --ig-header-height: 44px;
   --ig-input-height: 52px;
   --ig-safe-bottom: env(safe-area-inset-bottom, 0px);

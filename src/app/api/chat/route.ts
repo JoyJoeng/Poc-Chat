@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { getCharacterById } from "@/lib/characters";
+import {
+  CALL_TRIGGER_MESSAGE,
+  CALL_DECLINE_MESSAGE,
+  CALL_ACCEPT_MESSAGE,
+} from "@/lib/features/call/config";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
@@ -23,7 +28,7 @@ async function createReplyWithPrompt(
   const response = await openai.responses.create({
     prompt: { id: promptId },
     input: toResponseInput(messages),
-  } as OpenAI.Responses.ResponseCreateParamsNonStreaming);
+  } as unknown as OpenAI.Responses.ResponseCreateParamsNonStreaming);
 
   return response.output_text?.trim();
 }
@@ -51,7 +56,7 @@ async function createReplyWithSystemPrompt(
 
 export async function POST(request: NextRequest) {
   try {
-    const { characterId, messages } = await request.json();
+    const { characterId, messages, mode, callResponse } = await request.json();
 
     if (!characterId || !messages?.length) {
       return NextResponse.json(
@@ -86,13 +91,35 @@ export async function POST(request: NextRequest) {
       })
     );
 
+    let apiMessages = chatMessages;
+
+    if (mode === "call-trigger") {
+      apiMessages = [
+        ...chatMessages,
+        { role: "user" as const, content: CALL_TRIGGER_MESSAGE },
+      ];
+    } else if (mode === "call-response") {
+      if (callResponse !== "no" && callResponse !== "yes") {
+        return NextResponse.json(
+          { error: "callResponse는 no 또는 yes여야 합니다." },
+          { status: 400 }
+        );
+      }
+      const hiddenMessage =
+        callResponse === "no" ? CALL_DECLINE_MESSAGE : CALL_ACCEPT_MESSAGE;
+      apiMessages = [
+        ...chatMessages,
+        { role: "user" as const, content: hiddenMessage },
+      ];
+    }
+
     const promptId = resolvePromptId(character);
     const reply = promptId
-      ? await createReplyWithPrompt(openai, promptId, chatMessages)
+      ? await createReplyWithPrompt(openai, promptId, apiMessages)
       : await createReplyWithSystemPrompt(
           openai,
           character.systemPrompt,
-          chatMessages
+          apiMessages
         );
 
     if (!reply) {

@@ -5,9 +5,10 @@ import { useState } from "react";
 interface ChatInputProps {
   onSend: (message: string) => void;
   disabled?: boolean;
+  dark?: boolean;
 }
 
-export default function ChatInput({ onSend, disabled }: ChatInputProps) {
+export default function ChatInput({ onSend, disabled, dark = false }: ChatInputProps) {
   const [text, setText] = useState("");
 
   const handleSend = () => {
@@ -26,21 +27,35 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
 
   return (
     <div
-      className="border-t border-[var(--ig-border)] bg-white px-3 flex items-center gap-2"
+      className={`border-t px-3 flex items-center gap-2 ${
+        dark ? "border-[#333] bg-black" : "border-[var(--ig-border)] bg-white"
+      }`}
       style={{
         height: "calc(var(--ig-input-height) + var(--ig-safe-bottom))",
         paddingBottom: "var(--ig-safe-bottom)",
       }}
     >
-      <div className="flex-1 flex items-center bg-[var(--ig-input-bg)] rounded-full pl-4 pr-1.5 py-1.5 min-h-[44px]">
+      <div
+        className={`flex-1 flex items-center rounded-full pl-4 pr-1.5 py-1.5 min-h-[44px] ${
+          dark ? "bg-[#262626]" : "bg-[var(--ig-input-bg)]"
+        }`}
+      >
         <input
           type="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="메세지 보내기"
+          placeholder={
+            dark
+              ? "메세지 보내기, *는 행동으로 표현됩니다."
+              : "메세지 보내기"
+          }
           disabled={disabled}
-          className="flex-1 bg-transparent text-[15px] outline-none placeholder:text-[var(--ig-text-secondary)] disabled:opacity-50 min-w-0"
+          className={`flex-1 bg-transparent text-[15px] outline-none disabled:opacity-50 min-w-0 ${
+            dark
+              ? "text-white placeholder:text-[#777]"
+              : "placeholder:text-[var(--ig-text-secondary)]"
+          }`}
         />
         {text.trim() ? (
           <button
@@ -48,7 +63,11 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
             onClick={handleSend}
             disabled={disabled}
             aria-label="보내기"
-            className="shrink-0 flex items-center justify-center h-8 min-w-[44px] px-3 rounded-full bg-[var(--ig-send-purple)] hover:bg-[var(--ig-send-purple-hover)] active:scale-[0.97] transition-all disabled:opacity-50"
+            className={`shrink-0 flex items-center justify-center h-8 min-w-[44px] px-3 rounded-full active:scale-[0.97] transition-all disabled:opacity-50 ${
+              dark
+                ? "bg-[var(--ig-story-send-bg)] hover:bg-[var(--ig-story-send-hover)]"
+                : "bg-[var(--ig-send-purple)] hover:bg-[var(--ig-send-purple-hover)]"
+            }`}
           >
             <svg
               width="17"

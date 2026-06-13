@@ -1,11 +1,11 @@
 # PoC Chat — 가상 캐릭터 DM
 
-인스타그램 DM UI로 가상 캐릭터와 대화하는 모바일 웹 앱입니다.
+인스타그램 UI로 가상 캐릭터 프로필을 보여주고, DM 채팅으로 대화하는 모바일 웹 앱입니다.
 
 ## 기능
 
-- 인스타그램과 동일한 DM UI (대화 목록, 채팅 화면, 메시지 버블)
-- ChatGPT API 기반 가상 캐릭터 대화 (3명의 캐릭터)
+- 인스타그램 스타일 프로필·게시물 UI
+- DM 채팅 (ChatGPT API + OpenAI Prompt ID) — **기능 플래그로 켜기/끄기 가능**
 - 모바일 전용 디자인 (데스크톱에서는 폰 프레임으로 표시)
 - Vercel 배포 지원
 
@@ -19,7 +19,7 @@ npm install
 
 ### 2. 환경 변수 설정
 
-`.env.local` 파일을 생성하고 OpenAI API 키를 설정하세요.
+`.env.local` 파일을 생성하세요.
 
 ```bash
 cp .env.example .env.local
@@ -27,6 +27,10 @@ cp .env.example .env.local
 
 ```env
 OPENAI_API_KEY=sk-your-openai-api-key-here
+OPENAI_PROMPT_ID=pmpt_your-prompt-id-here
+
+# DM 채팅 (true: 활성화, false: 프로필만)
+NEXT_PUBLIC_ENABLE_DM_CHAT=true
 ```
 
 ### 3. 개발 서버 실행
@@ -35,30 +39,45 @@ OPENAI_API_KEY=sk-your-openai-api-key-here
 npm run dev
 ```
 
-[http://localhost:3000](http://localhost:3000) 에서 확인하세요.
+[http://localhost:3000/profile/doyoon](http://localhost:3000/profile/doyoon) 에서 확인하세요.
+
+## 기능 플래그: DM 채팅
+
+DM 채팅을 최종 버전에 넣을지 말지 선택할 수 있도록 환경 변수로 분리해 두었습니다.
+
+| 설정 | 동작 |
+|------|------|
+| `NEXT_PUBLIC_ENABLE_DM_CHAT=true` (기본) | 프로필 + 메시지 버튼 + DM 채팅 |
+| `NEXT_PUBLIC_ENABLE_DM_CHAT=false` | 프로필만 표시 (메시지 버튼·채팅 페이지·API 비활성) |
+
+설정 파일: `src/lib/features.ts`
 
 ## Vercel 배포
 
-1. [Vercel](https://vercel.com)에 GitHub 저장소를 연결합니다.
-2. 프로젝트 설정에서 Environment Variables에 `OPENAI_API_KEY`를 추가합니다.
+1. [Vercel](https://vercel.com)에 GitHub 저장소 `JoyJoeng/Poc-Chat`을 연결합니다.
+2. **Environment Variables**에 아래 값을 추가합니다.
+
+| 변수 | 필수 | 설명 |
+|------|------|------|
+| `OPENAI_API_KEY` | DM 사용 시 | OpenAI API 키 |
+| `OPENAI_PROMPT_ID` | DM 사용 시 | 한도윤 Prompt ID |
+| `NEXT_PUBLIC_ENABLE_DM_CHAT` | 선택 | `true` 또는 `false` (기본: 활성) |
+
 3. Deploy를 클릭합니다.
 
-또는 Vercel CLI로 배포:
+또는 Vercel CLI:
 
 ```bash
 npx vercel
 ```
 
-## 캐릭터 추가
+## 캐릭터 수정
 
-`src/lib/characters.ts`에서 캐릭터를 추가하거나 수정할 수 있습니다.
-
-- `systemPrompt`: 캐릭터 성격과 말투를 정의
-- `username`, `displayName`, `bio`: UI에 표시되는 정보
+`src/lib/characters/doyoon.ts`에서 프로필·게시물·`promptId`를 수정할 수 있습니다.
 
 ## 기술 스택
 
 - **Framework**: Next.js 15 (App Router)
 - **Styling**: Tailwind CSS 4
-- **AI**: OpenAI GPT-4o-mini
+- **AI**: OpenAI Responses API + Prompt ID
 - **Deploy**: Vercel

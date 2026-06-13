@@ -55,6 +55,8 @@ export interface Message {
   content: string;
   timestamp: Date;
   status?: "sending" | "sent" | "error";
+  /** yes 수락 후 스토리 모드: action('') | dialogue("") */
+  segmentType?: "action" | "dialogue";
 }
 
 export interface Conversation {
