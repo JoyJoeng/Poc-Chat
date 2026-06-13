@@ -32,9 +32,9 @@ export interface CharacterProfile {
   linkText?: string;
   /** 프로필 사진 위 말풍선 텍스트 (선택) */
   noteBubble?: string;
-  postCount: number;
-  followerCount: number;
-  followingCount: number;
+  postCount: number | string;
+  followerCount: number | string;
+  followingCount: number | string;
   posts: ProfilePost[];
 }
 

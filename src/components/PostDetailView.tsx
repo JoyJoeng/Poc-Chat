@@ -3,14 +3,11 @@
 import Link from "next/link";
 import { useCallback, useState, type ReactNode } from "react";
 import { Character } from "@/types";
+import { formatCount } from "@/lib/format-count";
 
 interface PostDetailViewProps {
   character: Character;
   postIndex: number;
-}
-
-function formatCount(n: number): string {
-  return n.toLocaleString("ko-KR");
 }
 
 function renderCaptionWithMentions(text: string): ReactNode[] {

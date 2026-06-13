@@ -30,7 +30,7 @@ export const DOYOON_CHARACTER: Character = {
     bio: "DO ONE, Producer, Songwirter\nEXPERIMENTAL LUXURY AND FREE",
     linkText: "soundcloud.com/doone",
     postCount: 6,
-    followerCount: 812,
+    followerCount: "1,812",
     followingCount: 23,
     posts: [
       {

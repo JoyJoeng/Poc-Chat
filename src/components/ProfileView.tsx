@@ -3,16 +3,13 @@
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import { Character, ProfilePost } from "@/types";
+import { formatCount } from "@/lib/format-count";
 
 interface ProfileViewProps {
   character: Character;
 }
 
 type ProfileTab = "grid" | "reels" | "tagged";
-
-function formatCount(n: number): string {
-  return n.toLocaleString("ko-KR");
-}
 
 function PostGrid({
   characterId,
@@ -113,6 +110,7 @@ const TAGGED_EMPTY_ICON = (
 export default function ProfileView({ character }: ProfileViewProps) {
   const { profile } = character;
   const [activeTab, setActiveTab] = useState<ProfileTab>("grid");
+  const [isFollowing, setIsFollowing] = useState(false);
 
   const allPosts = profile.posts.map((post, index) => ({ post, index }));
 
@@ -274,15 +272,33 @@ export default function ProfileView({ character }: ProfileViewProps) {
         </div>
 
         <div className="flex items-center gap-1.5 px-4 pb-3 w-full">
-          <button className="flex-1 h-[30px] bg-[var(--ig-blue)] text-white text-[14px] font-semibold rounded-lg">
-            팔로우
-          </button>
-          <Link
-            href={`/chat/${character.id}`}
-            className="flex-1 h-[30px] bg-[#efefef] text-[var(--ig-text)] text-[14px] font-semibold rounded-lg flex items-center justify-center"
+          <button
+            type="button"
+            onClick={() => setIsFollowing((prev) => !prev)}
+            className={`flex-1 h-[30px] text-[14px] font-semibold rounded-lg transition-colors ${
+              isFollowing
+                ? "bg-[#efefef] text-[var(--ig-text)] hover:bg-[#e4e4e4] active:bg-[#dcdcdc]"
+                : "bg-[var(--ig-blue)] text-white hover:bg-[#1877f2] active:bg-[#166fe5]"
+            }`}
           >
-            메시지
-          </Link>
+            {isFollowing ? "팔로잉" : "팔로우"}
+          </button>
+          <div className="relative flex-1">
+            <div className="absolute bottom-[calc(100%+10px)] left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+              <div className="relative bg-white border border-[var(--ig-border)] rounded-2xl px-3 py-1.5 shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+                <p className="text-[11px] leading-tight text-[var(--ig-text)] font-medium whitespace-nowrap">
+                  메시지를 보내볼까요?
+                </p>
+                <span className="absolute left-1/2 -translate-x-1/2 -bottom-[5px] w-2.5 h-2.5 bg-white border-r border-b border-[var(--ig-border)] rotate-45" />
+              </div>
+            </div>
+            <Link
+              href={`/chat/${character.id}`}
+              className="w-full h-[30px] bg-[#efefef] text-[var(--ig-text)] text-[14px] font-semibold rounded-lg flex items-center justify-center"
+            >
+              메시지
+            </Link>
+          </div>
           <button
             className="w-[30px] h-[30px] bg-[#efefef] rounded-lg flex items-center justify-center shrink-0"
             aria-label="사람 찾기"

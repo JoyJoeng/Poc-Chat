@@ -9,6 +9,13 @@ interface IncomingCallViewProps {
   responseDisabled?: boolean;
 }
 
+const CALL_GUIDANCE_TEXT = `전화를 받으면
+지금부터 행동이 서술되는 스토리모드로 전개됩니다.
+원한다면 전화를 받아주세요.
+
+안 받아도 괜찮아요.
+아직 DM편하다면 거절을 눌러주세요.`;
+
 export default function IncomingCallView({
   username,
   displayName,
@@ -26,9 +33,9 @@ export default function IncomingCallView({
       />
 
       {/* 가려진 화면 중앙 안내 문구 */}
-      <div className="absolute inset-0 z-[5] flex items-center justify-center px-8 pointer-events-none">
-        <p className="max-w-[280px] text-center text-sm font-semibold leading-relaxed text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.75)]">
-          안내문구가 들어갈 자리
+      <div className="absolute inset-0 z-[5] flex items-center justify-center px-4 pointer-events-none">
+        <p className="w-full max-w-[340px] text-center text-sm font-semibold leading-relaxed text-white whitespace-pre-line drop-shadow-[0_2px_12px_rgba(0,0,0,0.75)]">
+          {CALL_GUIDANCE_TEXT}
         </p>
       </div>
 
@@ -62,7 +69,7 @@ export default function IncomingCallView({
 
           <div className="flex-1 min-w-0 text-white">
             <p className="text-[13px] leading-tight text-white/90">
-              Instagram Video
+              Instagram Call
             </p>
             <p className="text-[15px] font-semibold leading-tight truncate">
               [{username}] {displayName.split(" ").pop()}

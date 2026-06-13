@@ -22,9 +22,9 @@ export type CallChatMessage = { role: "user" | "assistant"; content: string };
 export const CALL_DEBUG_COMMAND = "/triger";
 
 export const callFeatureConfig = {
-  /** 상호작용 N회: 유저 메시지 전송 → API 응답 → 캐릭터 메시지 표시 완료 시 1 증가. 테스트용 임시 2회 */
+  /** 상호작용 N회: 유저 메시지 전송 → API 응답 → 캐릭터 메시지 표시 완료 시 1 증가 */
   interactionThreshold: Number(
-    process.env.NEXT_PUBLIC_CALL_INTERACTION_THRESHOLD ?? 2
+    process.env.NEXT_PUBLIC_CALL_INTERACTION_THRESHOLD ?? 50
   ),
   triggerMessage: CALL_TRIGGER_MESSAGE,
 } as const;
