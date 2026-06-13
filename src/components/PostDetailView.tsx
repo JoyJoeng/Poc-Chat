@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useState, type ReactNode } from "react";
 import { Character } from "@/types";
 
 interface PostDetailViewProps {
@@ -9,8 +9,57 @@ interface PostDetailViewProps {
   postIndex: number;
 }
 
-function formatLikeCount(n: number): string {
+function formatCount(n: number): string {
   return n.toLocaleString("ko-KR");
+}
+
+function renderCaptionWithMentions(text: string): ReactNode[] {
+  return text.split(/(@[\w.]+)/g).map((part, i) =>
+    part.startsWith("@") ? (
+      <span key={i} className="text-[var(--ig-blue-dark)] font-semibold">
+        {part}
+      </span>
+    ) : (
+      <span key={i}>{part}</span>
+    )
+  );
+}
+
+function StatItem({
+  icon,
+  count,
+  label,
+  onClick,
+}: {
+  icon: ReactNode;
+  count: number;
+  label: string;
+  onClick?: () => void;
+}) {
+  const content = (
+    <>
+      {icon}
+      <span className="text-[14px] font-semibold">{formatCount(count)}</span>
+    </>
+  );
+
+  if (onClick) {
+    return (
+      <button
+        onClick={onClick}
+        className="flex items-center gap-1.5 text-[var(--ig-text)]"
+        aria-label={label}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-1.5 text-[var(--ig-text)]" aria-label={label}>
+      {content}
+    </div>
+  );
 }
 
 export default function PostDetailView({
@@ -24,6 +73,8 @@ export default function PostDetailView({
   const [liked, setLiked] = useState(false);
 
   const likeCount = (post.likeCount ?? 0) + (liked ? 1 : 0);
+  const commentCount = post.commentCount ?? post.comments?.length ?? 0;
+  const shareCount = post.shareCount ?? 0;
 
   const goToImage = useCallback(
     (direction: "prev" | "next") => {
@@ -80,12 +131,12 @@ export default function PostDetailView({
       {/* 스크롤 영역 */}
       <div className="flex-1 overflow-y-auto hide-scrollbar">
         {/* 이미지 */}
-        <div className="relative w-full aspect-square bg-black">
+        <div className="relative w-full aspect-square bg-gray-100 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={images[imageIndex]}
             alt={`게시물 ${postIndex + 1}`}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-cover"
           />
 
           {images.length > 1 && imageIndex > 0 && (
@@ -135,37 +186,65 @@ export default function PostDetailView({
           )}
         </div>
 
-        {/* 좋아요 버튼 */}
-        <div className="px-3 py-2.5">
-          <button onClick={() => setLiked(!liked)} aria-label="좋아요">
-            {liked ? (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#ed4956">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-              </svg>
-            ) : (
+        {/* 좋아요 · 댓글 · DM 공유 */}
+        <div className="flex items-center gap-4 px-3 py-2.5">
+          <StatItem
+            label="좋아요"
+            count={likeCount}
+            onClick={() => setLiked(!liked)}
+            icon={
+              liked ? (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#ed4956">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
+              ) : (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  />
+                </svg>
+              )
+            }
+          />
+          <StatItem
+            label="댓글"
+            count={commentCount}
+            icon={
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path
-                  d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
+                  d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"
                   stroke="currentColor"
                   strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
-            )}
-          </button>
+            }
+          />
+          <StatItem
+            label="DM 공유"
+            count={shareCount}
+            icon={
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            }
+          />
         </div>
-
-        {/* 좋아요 수 */}
-        {likeCount > 0 && (
-          <p className="px-3 text-[14px] font-semibold">
-            좋아요 {formatLikeCount(likeCount)}개
-          </p>
-        )}
 
         {/* 캡션 */}
         {post.caption && (
-          <p className="px-3 pt-1.5 text-[14px] leading-snug">
+          <p className="px-3 pt-0.5 text-[14px] leading-snug">
             <span className="font-semibold mr-1.5">{profile.username}</span>
-            {post.caption}
+            {renderCaptionWithMentions(post.caption)}
           </p>
         )}
 

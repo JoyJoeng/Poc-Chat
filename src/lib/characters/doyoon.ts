@@ -23,7 +23,7 @@ export const DOYOON_CHARACTER: Character = {
   profile: {
     username: "doone.w",
     avatarUrl:
-      "https://api.dicebear.com/9.x/avataaars/svg?seed=doyoon&backgroundColor=c0d6e4",
+      "/avatars/doyoon.png",
     noteBubble: "#NP-sleeper",
     occupation: "음악가/밴드",
     bio: "DO ONE, Producer, Songwirter\nEXPERIMENTAL LUXURY AND FREE",
@@ -33,76 +33,91 @@ export const DOYOON_CHARACTER: Character = {
     followingCount: 23,
     posts: [
       {
-        imageUrl:
-          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=800&fit=crop",
-        caption: "오늘 날씨 너무 좋다",
-        likeCount: 89,
+        imageUrl: "/posts/doyoon/01.png",
+        images: ["/posts/doyoon/01.png", "/posts/doyoon/02.png"],
+        isCarousel: true,
+        caption: "NEW 사랑은 전쟁터와 같다 @TattoodID",
+        likeCount: 178,
+        commentCount: 12,
+        shareCount: 2,
         postedAt: "2일 전",
         comments: [
-          { username: "minseo.k", text: "부럽다 ㅠㅠ" },
-          { username: "june_94", text: "어디야?" },
+          { username: "minseo.k", text: "새로운 노래 스포?" },
         ],
       },
       {
-        imageUrl:
-          "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&h=800&fit=crop",
+        imageUrl: "/posts/doyoon/03.png",
         images: [
-          "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&h=800&fit=crop",
-          "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&h=800&fit=crop",
+          "/posts/doyoon/03.png",
+          "/posts/doyoon/04.png",
+          "/posts/doyoon/05.png",
+          "/posts/doyoon/06.png",
+          "/posts/doyoon/07.png",
+          "/posts/doyoon/08.png",
+          "/posts/doyoon/09.png",
         ],
         isCarousel: true,
-        caption: "새로 찾은 카페 ☕",
+        caption: "좋아하는 영화들 고전 흑백이 주는 안정감",
         likeCount: 134,
+        commentCount: 8,
+        shareCount: 12,
         postedAt: "5일 전",
         comments: [
           { username: "yuna_day", text: "분위기 미쳤다" },
-          { username: "minseo.k", text: "위치 공유해줘!" },
-          { username: "kai_runner", text: "커피 맛있어 보인다" },
+          { username: "kai_runner", text:"다 무슨영화인지 알고싶어요 ㅋㅋㅋ" },
         ],
       },
       {
-        imageUrl:
-          "https://images.unsplash.com/photo-1514565131-fce0801e5785?w=800&h=800&fit=crop",
-        caption: "퇴근길",
+        imageUrl: "/posts/doyoon/10.png",
+        images: [
+          "/posts/doyoon/10.png",
+          "/posts/doyoon/11.png",
+          "/posts/doyoon/12.png",
+          "/posts/doyoon/13.png",
+        ],
+        isCarousel: true,
+        caption: "새 곡 쓰는 중인데 영감이 안 떠오르는 나날들 새벽 작업 그만해야하는데...",
         likeCount: 67,
-        postedAt: "1주 전",
-        comments: [
-          { username: "june_94", text: "서울 야경 최고" },
-          { username: "soyeon_art", text: "사진 잘 찍는다 ✨" },
-        ],
-      },
-      {
-        imageUrl:
-          "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=800&fit=crop",
-        caption: "오늘도 완료 💪",
-        likeCount: 156,
-        postedAt: "2주 전",
-        comments: [
-          { username: "kai_runner", text: "역시 도윤이 형 ㅋㅋ" },
-          { username: "minseo.k", text: "대단해..." },
-        ],
-      },
-      {
-        imageUrl:
-          "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&h=800&fit=crop",
-        isReel: true,
-        caption: "요즘 빠진 곡 🎧",
-        likeCount: 203,
+        commentCount: 6,
+        shareCount: 3,
         postedAt: "3주 전",
         comments: [
-          { username: "yuna_day", text: "곡 제목 뭐야?" },
-          { username: "june_94", text: "플리 공유 좀" },
+          { username: "june_94", text: "ㅋㅋㅋㅋ빨리써ㅓ주세요" },
+          { username: "soyeon_art", text: "어쩐지 사진이 전부 새벽 느낌 :)" },
         ],
       },
       {
-        imageUrl:
-          "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=800&fit=crop",
-        caption: "주말 산책",
-        likeCount: 98,
+        imageUrl: "/posts/doyoon/14.png",
+        caption: "오늘 공연 와주셔서 감사합니다 ㅋㅋ 다음 공연도 금방 찾아갈게요",
+        likeCount: 451,
+        commentCount: 28,
+        shareCount: 21,
         postedAt: "1개월 전",
         comments: [
-          { username: "soyeon_art", text: "힐링된다" },
-          { username: "minseo.k", text: "다음에 같이 가자" },
+          { username: "kai_runner", text: "역시 도윤이 형 ㅋㅋ 목소리 대단해" },
+          { username: "minseo.k", text: "오늘 공연 너무 잘 봤어요!! 금방 또 보고싶은데 언제해요???" },
+        ],
+      },
+      {
+        imageUrl: "/posts/doyoon/15.png",
+        caption: "심심하다 언제 작업하나~~",
+        likeCount: 58,
+        commentCount: 6,
+        shareCount: 2,
+        postedAt: "3개월 전",
+        comments: [
+          { username: "yy_drumd", text: "작업실 오셔 ㅋㅋ?" },
+        ],
+      },
+      {
+        imageUrl: "/posts/doyoon/16.png",
+        caption: "요즘 빠진 곡 🎧",
+        likeCount: 47,
+        commentCount: 4,
+        shareCount: 2,
+        postedAt: "5개월 전",
+        comments: [
+          { username: "minseo.k", text: "오감성있네 ㅎㅎㅎ" },
         ],
       },
     ],

@@ -9,6 +9,10 @@ export interface ProfilePost {
   images?: string[];
   caption?: string;
   likeCount?: number;
+  /** 댓글 수 (없으면 comments 배열 길이 사용) */
+  commentCount?: number;
+  /** DM 공유 수 */
+  shareCount?: number;
   comments?: PostComment[];
   isCarousel?: boolean;
   isReel?: boolean;
