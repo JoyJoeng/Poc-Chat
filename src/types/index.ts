@@ -44,6 +44,8 @@ export interface Character {
   displayName: string;
   profile: CharacterProfile;
   isOnline: boolean;
+  /** OpenAI 대시보드에 저장된 Prompt ID (없으면 systemPrompt 사용) */
+  promptId?: string;
   systemPrompt: string;
 }
 

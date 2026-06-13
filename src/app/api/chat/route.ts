@@ -2,6 +2,53 @@ import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { getCharacterById } from "@/lib/characters";
 
+type ChatMessage = { role: "user" | "assistant"; content: string };
+
+function resolvePromptId(character: { promptId?: string }): string | undefined {
+  return character.promptId ?? process.env.OPENAI_PROMPT_ID;
+}
+
+function toResponseInput(messages: ChatMessage[]) {
+  return messages.map((message) => ({
+    role: message.role,
+    content: message.content,
+  }));
+}
+
+async function createReplyWithPrompt(
+  openai: OpenAI,
+  promptId: string,
+  messages: ChatMessage[]
+) {
+  const response = await openai.responses.create({
+    prompt: { id: promptId },
+    input: toResponseInput(messages),
+  } as OpenAI.Responses.ResponseCreateParamsNonStreaming);
+
+  return response.output_text?.trim();
+}
+
+async function createReplyWithSystemPrompt(
+  openai: OpenAI,
+  systemPrompt: string,
+  messages: ChatMessage[]
+) {
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      { role: "system", content: systemPrompt },
+      ...messages.map((message) => ({
+        role: message.role,
+        content: message.content,
+      })),
+    ],
+    max_tokens: 300,
+    temperature: 0.9,
+  });
+
+  return completion.choices[0]?.message?.content?.trim();
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { characterId, messages } = await request.json();
@@ -32,20 +79,21 @@ export async function POST(request: NextRequest) {
       apiKey: process.env.OPENAI_API_KEY,
     });
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: character.systemPrompt },
-        ...messages.map((m: { role: string; content: string }) => ({
-          role: m.role as "user" | "assistant",
-          content: m.content,
-        })),
-      ],
-      max_tokens: 300,
-      temperature: 0.9,
-    });
+    const chatMessages = messages.map(
+      (message: { role: string; content: string }) => ({
+        role: message.role as "user" | "assistant",
+        content: message.content,
+      })
+    );
 
-    const reply = completion.choices[0]?.message?.content;
+    const promptId = resolvePromptId(character);
+    const reply = promptId
+      ? await createReplyWithPrompt(openai, promptId, chatMessages)
+      : await createReplyWithSystemPrompt(
+          openai,
+          character.systemPrompt,
+          chatMessages
+        );
 
     if (!reply) {
       return NextResponse.json(

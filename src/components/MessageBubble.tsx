@@ -52,7 +52,7 @@ export default function MessageBubble({
         <div
           className={`px-4 py-2.5 rounded-[22px] text-[15px] leading-[1.35] break-words ${
             isUser
-              ? "bg-[var(--ig-bubble-sent)] text-white rounded-br-[4px]"
+              ? "bg-[var(--ig-send-purple)] text-white rounded-br-[4px]"
               : "bg-[var(--ig-bubble-received)] text-[var(--ig-text)] rounded-bl-[4px]"
           } ${message.status === "sending" ? "opacity-60" : ""}`}
         >

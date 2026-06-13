@@ -8,7 +8,9 @@
   --ig-text-secondary: #8e8e8e;
   --ig-blue: #0095f6;
   --ig-blue-dark: #00376b;
-  --ig-bubble-sent: #3797f0;
+  --ig-bubble-sent: #8e3ff5;
+  --ig-send-purple: #8e3ff5;
+  --ig-send-purple-hover: #7d2fe8;
   --ig-bubble-received: #efefef;
   --ig-input-bg: #efefef;
   --ig-header-height: 44px;

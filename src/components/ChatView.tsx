@@ -11,6 +11,7 @@ import MessageBubble, {
 import TypingIndicator from "@/components/TypingIndicator";
 import Avatar from "@/components/Avatar";
 import { Character, Message } from "@/types";
+import { loadChatMessages, saveChatMessages, clearChatMessages } from "@/lib/chat-storage";
 
 interface ChatViewProps {
   character: Character;
@@ -21,15 +22,39 @@ function generateId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
+function splitReplyMessages(reply: string): string[] {
+  return reply
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+}
+
+async function delay(ms: number) {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export default function ChatView({
   character,
   initialMessages = [],
 }: ChatViewProps) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [isHydrated, setIsHydrated] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+  // 세션 저장소에서 대화 복원 (탭/창 닫기 전까지 유지)
+  useEffect(() => {
+    const stored = loadChatMessages(character.id);
+    setMessages(stored ?? []);
+    setIsHydrated(true);
+  }, [character.id]);
+
+  useEffect(() => {
+    if (!isHydrated) return;
+    saveChatMessages(character.id, messages);
+  }, [character.id, messages, isHydrated]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -39,19 +64,12 @@ export default function ChatView({
     scrollToBottom();
   }, [messages, isTyping]);
 
-  // 첫 방문 시 캐릭터 인사 메시지
-  useEffect(() => {
-    if (messages.length === 0) {
-      const greeting: Message = {
-        id: generateId(),
-        role: "assistant",
-        content: getGreeting(character.id),
-        timestamp: new Date(),
-        status: "sent",
-      };
-      setMessages([greeting]);
-    }
-  }, [character.id, messages.length]);
+  const handleReset = () => {
+    clearChatMessages(character.id);
+    setMessages([]);
+    setIsTyping(false);
+    setIsLoading(false);
+  };
 
   const handleSend = async (content: string) => {
     const userMessage: Message = {
@@ -95,18 +113,26 @@ export default function ChatView({
         )
       );
 
-      // 타이핑 딜레이로 자연스러운 느낌
-      await new Promise((r) => setTimeout(r, 800 + Math.random() * 1200));
+      const parts = splitReplyMessages(data.reply);
+      if (parts.length === 0) {
+        throw new Error("응답을 생성하지 못했습니다.");
+      }
 
-      const assistantMessage: Message = {
-        id: generateId(),
-        role: "assistant",
-        content: data.reply,
-        timestamp: new Date(),
-        status: "sent",
-      };
+      for (let i = 0; i < parts.length; i++) {
+        const typingDelay =
+          i === 0 ? 800 + Math.random() * 1200 : 400 + Math.random() * 600;
+        await delay(typingDelay);
 
-      setMessages((prev) => [...prev, assistantMessage]);
+        const assistantMessage: Message = {
+          id: generateId(),
+          role: "assistant",
+          content: parts[i],
+          timestamp: new Date(),
+          status: "sent",
+        };
+
+        setMessages((prev) => [...prev, assistantMessage]);
+      }
     } catch {
       setMessages((prev) =>
         prev.map((m) =>
@@ -134,12 +160,22 @@ export default function ChatView({
       }
 
       const prevMessage = messages[index - 1];
+      const nextMessage = messages[index + 1];
       const showAvatar =
         message.role === "assistant" &&
-        (!prevMessage || prevMessage.role !== "assistant");
+        (!nextMessage || nextMessage.role !== "assistant");
+
+      const isRoleSwitch =
+        prevMessage && prevMessage.role !== message.role;
+      const isConsecutiveAssistant =
+        prevMessage?.role === "assistant" && message.role === "assistant";
+
+      let spacingClass = "mt-0.5";
+      if (isRoleSwitch) spacingClass = "mt-4";
+      else if (isConsecutiveAssistant) spacingClass = "mt-1.5";
 
       elements.push(
-        <div key={message.id} className="py-0.5">
+        <div key={message.id} className={spacingClass}>
           <MessageBubble
             message={message}
             showAvatar={showAvatar}
@@ -161,6 +197,8 @@ export default function ChatView({
         displayName={character.displayName}
         avatarUrl={character.profile.avatarUrl}
         isOnline={character.isOnline}
+        onReset={handleReset}
+        resetDisabled={isLoading}
       />
 
       {/* 프로필 섹션 (인스타 DM 스타일) */}
@@ -174,12 +212,9 @@ export default function ChatView({
         <p className="text-sm text-[var(--ig-text-secondary)] mt-0.5">
           {character.displayName} · Instagram
         </p>
-        <p className="text-sm text-[var(--ig-text-secondary)] mt-1 text-center whitespace-pre-line">
-          {character.profile.bio}
-        </p>
         <Link
           href={`/profile/${character.id}`}
-          className="mt-3 text-sm font-semibold text-[var(--ig-blue)]"
+          className="mt-4 px-4 py-1.5 bg-[#efefef] text-[var(--ig-text)] text-sm font-semibold rounded-lg hover:bg-[#e4e4e4] transition-colors"
         >
           프로필 보기
         </Link>
@@ -198,11 +233,4 @@ export default function ChatView({
       <ChatInput onSend={handleSend} disabled={isLoading} />
     </div>
   );
-}
-
-function getGreeting(characterId: string): string {
-  const greetings: Record<string, string> = {
-    doyoon: "야, 뭐해? 오늘 하루 어땠어",
-  };
-  return greetings[characterId] ?? "안녕! 반가워 😊";
 }

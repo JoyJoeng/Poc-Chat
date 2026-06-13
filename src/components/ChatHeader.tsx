@@ -9,6 +9,8 @@ interface ChatHeaderProps {
   displayName: string;
   avatarUrl: string;
   isOnline: boolean;
+  onReset: () => void;
+  resetDisabled?: boolean;
 }
 
 export default function ChatHeader({
@@ -17,6 +19,8 @@ export default function ChatHeader({
   displayName,
   avatarUrl,
   isOnline,
+  onReset,
+  resetDisabled = false,
 }: ChatHeaderProps) {
   return (
     <header
@@ -47,7 +51,7 @@ export default function ChatHeader({
           <Avatar
             src={avatarUrl}
             alt={displayName}
-            size="sm"
+            size="xs"
             showOnline
             isOnline={isOnline}
           />
@@ -62,55 +66,31 @@ export default function ChatHeader({
         </Link>
       </div>
 
-      <div className="flex items-center shrink-0">
-        <button
-          className="p-2 text-[var(--ig-text)] hover:opacity-70 transition-opacity"
-          aria-label="음성 통화"
+      <button
+        type="button"
+        onClick={onReset}
+        disabled={resetDisabled}
+        aria-label="대화 초기화"
+        className="shrink-0 flex items-center gap-1.5 mr-1 px-2.5 py-1.5 bg-[#efefef] rounded-lg text-xs font-semibold text-[var(--ig-text)] hover:bg-[#e4e4e4] active:bg-[#dcdcdc] transition-colors disabled:opacity-40 disabled:pointer-events-none"
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
-        <button
-          className="p-2 text-[var(--ig-text)] hover:opacity-70 transition-opacity"
-          aria-label="영상 통화"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M23 7l-7 5 7 5V7z"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <rect
-              x="1"
-              y="5"
-              width="15"
-              height="14"
-              rx="2"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            />
-          </svg>
-        </button>
-        <button
-          className="p-2 text-[var(--ig-text)] hover:opacity-70 transition-opacity"
-          aria-label="정보"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="5" r="1.5" fill="currentColor" />
-            <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-            <circle cx="12" cy="19" r="1.5" fill="currentColor" />
-          </svg>
-        </button>
-      </div>
+          <polyline points="3 6 5 6 21 6" />
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+          <line x1="10" y1="11" x2="10" y2="17" />
+          <line x1="14" y1="11" x2="14" y2="17" />
+        </svg>
+        대화 초기화
+      </button>
     </header>
   );
 }
