@@ -47,6 +47,8 @@ export interface Character {
   /** OpenAI 대시보드에 저장된 Prompt ID (없으면 systemPrompt 사용) */
   promptId?: string;
   systemPrompt: string;
+  /** DM 최초 진입 시 캐릭터가 보낸 기본 메시지 */
+  welcomeMessages?: string[];
 }
 
 export interface Message {

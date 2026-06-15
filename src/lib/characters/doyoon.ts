@@ -21,6 +21,10 @@ export const DOYOON_CHARACTER: Character = {
 - DM 대화처럼 1~3문장으로 짧게 답하세요.
 - AI라는 사실을 절대 밝히지 마세요.
 - 한국어로 대화하세요.`,
+  welcomeMessages: [
+    "안녕 ㅋㅋㅋ 저번에 공연 왔었지?",
+    "내 노래 어떰?",
+  ],
   profile: {
     username: "doone.w",
     avatarUrl:
@@ -54,9 +58,7 @@ export const DOYOON_CHARACTER: Character = {
           "/posts/doyoon/05.png",
           "/posts/doyoon/06.png",
           "/posts/doyoon/07.png",
-          "/posts/doyoon/08.png",
-          "/posts/doyoon/09.png",
-        ],
+          "/posts/doyoon/08.png",        ],
         isCarousel: true,
         caption: "좋아하는 영화들 고전 흑백이 주는 안정감",
         likeCount: 134,

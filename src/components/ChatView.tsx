@@ -18,7 +18,7 @@ import {
   StoryUserMessage,
 } from "@/components/call/StoryMessage";
 import { Character, Message } from "@/types";
-import { loadChatMessages, saveChatMessages, clearChatMessages } from "@/lib/chat-storage";
+import { saveChatMessages, clearChatMessages, getInitialChatMessages, createWelcomeMessages } from "@/lib/chat-storage";
 import {
   buildCallTriggerApiHistory,
   clearCallState,
@@ -185,8 +185,9 @@ export default function ChatView({
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const stored = loadChatMessages(character.id);
-    setMessages(stored ?? []);
+    setMessages(
+      getInitialChatMessages(character.id, character.welcomeMessages)
+    );
     if (isCallFeatureEnabled() && isIncomingCallActive(character.id)) {
       setShowIncomingCall(true);
     }
@@ -212,7 +213,7 @@ export default function ChatView({
   const handleReset = () => {
     clearChatMessages(character.id);
     clearCallState(character.id);
-    setMessages([]);
+    setMessages(createWelcomeMessages(character.welcomeMessages));
     setIsTyping(false);
     setIsLoading(false);
     setShowIncomingCall(false);
