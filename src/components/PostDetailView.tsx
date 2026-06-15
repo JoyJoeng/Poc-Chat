@@ -27,11 +27,13 @@ function StatItem({
   count,
   label,
   onClick,
+  href,
 }: {
   icon: ReactNode;
   count: number;
   label: string;
   onClick?: () => void;
+  href?: string;
 }) {
   const content = (
     <>
@@ -39,6 +41,18 @@ function StatItem({
       <span className="text-[14px] font-semibold">{formatCount(count)}</span>
     </>
   );
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className="flex items-center gap-1.5 text-[var(--ig-text)]"
+        aria-label={label}
+      >
+        {content}
+      </Link>
+    );
+  }
 
   if (onClick) {
     return (
@@ -65,10 +79,12 @@ function PostFeedItem({
   post,
   postIndex,
   username,
+  characterId,
 }: {
   post: ProfilePost;
   postIndex: number;
   username: string;
+  characterId: string;
 }) {
   const images = post.images?.length ? post.images : [post.imageUrl];
   const [imageIndex, setImageIndex] = useState(0);
@@ -221,6 +237,7 @@ function PostFeedItem({
         <StatItem
           label="DM 공유"
           count={shareCount}
+          href={`/chat/${characterId}`}
           icon={
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path
@@ -331,6 +348,7 @@ export default function PostDetailView({
               post={post}
               postIndex={index}
               username={profile.username}
+              characterId={character.id}
             />
             {index < profile.posts.length - 1 && (
               <div className="h-2 bg-[var(--ig-secondary-bg)]" />
